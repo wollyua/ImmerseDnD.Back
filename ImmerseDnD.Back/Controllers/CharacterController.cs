@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ImmerseDnD.Back.Models;
+using ImmerseDnD.Back.Repository;
+using ImmerseDnD.Back.Repository.Models;
 
 namespace ImmerseDnD.Back.Controllers
 {
@@ -9,14 +10,16 @@ namespace ImmerseDnD.Back.Controllers
 	public class CharacterController : ControllerBase
 	{
 		//add dbContext
-		private readonly ImmerseDnDContext dbContext;
-		public CharacterController() { }
-
+		private readonly immerse_dndDbContext dbContext = new immerse_dndDbContext();
 
 		[HttpGet]
 		public async Task<IActionResult> GetCharactersPreviews()
 		{
-			return Ok(null /*await dbContext.Characters.ToList.Async()*/);
+			var characters = await dbContext.Characters.ToArrayAsync();
+
+			if (characters.Length == 0) return NotFound();
+
+			return Ok(await dbContext.Characters.ToArrayAsync());
 		}
 
 		[HttpGet]
@@ -30,11 +33,11 @@ namespace ImmerseDnD.Back.Controllers
 			return Ok(character);
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> AddCharacter(CharacterInit characterInit)
-		{
-			var character = new CharacterInit();
 
+		[HttpPost]
+		public async Task<IActionResult> AddCharacter(Character characterInit)
+		{
+			var character = new Character();
 
 			return Ok(character);
 		}
