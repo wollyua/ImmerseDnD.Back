@@ -10,7 +10,7 @@ public partial class InventoryItem
 {
     [Key]
     [Column("ID")]
-    public Guid Id { get; set; }
+    public Guid ItemId { get; set; }
 
     [Column("CharacterID")]
     public Guid CharacterId { get; set; }
@@ -26,4 +26,11 @@ public partial class InventoryItem
     [ForeignKey("CharacterId")]
     [InverseProperty("InventoryItems")]
     public virtual Character Character { get; set; } = null!;
+}
+
+public class InventoryItemDto
+{
+    public Guid CharacterId { get; set; }
+    public string ItemName { get; set; } = null!;
+    public string ItemDescription { get; set; } = null!;
 }

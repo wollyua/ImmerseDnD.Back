@@ -10,7 +10,7 @@ public partial class User
 {
     [Key]
     [Column("ID")]
-    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
 
     [StringLength(64)]
     [Unicode(false)]
@@ -26,4 +26,11 @@ public partial class User
 
     [InverseProperty("User")]
     public virtual ICollection<Character> Characters { get; set; } = new List<Character>();
+}
+
+public class UserDto
+{
+    public string UserName { get; set; } = null!;
+    public string UserEmail { get; set; } = null!;
+    public string UserPassword { get; set; } = null!;
 }
