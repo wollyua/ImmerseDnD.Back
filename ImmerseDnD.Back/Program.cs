@@ -11,6 +11,15 @@ namespace ImmerseDnD.Back
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
+			builder.Services.AddCors(options =>
+			{
+                options.AddDefaultPolicy(builder =>
+				{
+                    builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+            });
 
 			builder.Services.AddControllers()
 				.AddJsonOptions(options =>
@@ -37,9 +46,10 @@ namespace ImmerseDnD.Back
 			}
 
 			app.UseHttpsRedirection();
+			app.UseRouting();
+			app.UseCors();
 
 			app.UseAuthorization();
-
 
 			app.MapControllers();
 

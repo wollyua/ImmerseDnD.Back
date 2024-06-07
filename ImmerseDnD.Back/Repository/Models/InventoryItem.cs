@@ -30,6 +30,7 @@ public partial class InventoryItem
 
 public class InventoryItemDto
 {
+    public Guid ItemId { get; set; }
     public Guid CharacterId { get; set; }
     public string ItemName { get; set; } = null!;
     public string ItemDescription { get; set; } = null!;

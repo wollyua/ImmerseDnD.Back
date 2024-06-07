@@ -24,7 +24,7 @@ namespace ImmerseDnD.Back.Controllers
 		{
 			var characters = await dbContext.Characters.Where(c => c.UserId == UserId).Select(c => new CharacterPreviewDto
 			{
-				Id = c.CharacterId,
+				CharacterId = c.CharacterId,
 				UserId = c.UserId,
 				CharacterName = c.CharacterName,
 				CharacterRace = c.CharacterRace,
@@ -47,27 +47,72 @@ namespace ImmerseDnD.Back.Controllers
 		[Route("/Character/Get/{CharacterId}")]
 		public async Task<IActionResult> GetCharacter([FromRoute] Guid CharacterId)
 		{
-			var character = await dbContext.Characters
+			/*var character = await dbContext.Characters
 				.Include(c => c.InventoryItems)
 				.Include(c => c.Attacks)
-				.FirstOrDefaultAsync(c => c.CharacterId == CharacterId);
+				.FirstOrDefaultAsync(c => c.CharacterId == CharacterId);*/
+			var character = await dbContext.Characters.Select(c => new CharacterDto
+			{
+                CharacterId = c.CharacterId,
+                CharacterName = c.CharacterName,
+                CharacterRace = c.CharacterRace,
+                CharacterClass = c.CharacterClass,
+                CharacterLevel = c.CharacterLevel,
+                Strength = c.Strength,
+                Dexterity = c.Dexterity,
+                Constitution = c.Constitution,
+                Intelligence = c.Intelligence,
+                Wisdom = c.Wisdom,
+                Charisma = c.Charisma,
+				BonStr = c.BonStr,
+				BonCon = c.BonCon,
+				BonDex = c.BonDex,
+				BonInt = c.BonInt,
+				BonWis = c.BonWis,
+				BonCha = c.BonCha,
+				Inspiration = c.Inspiration,
+				ProficiencyBonus = c.ProficiencyBonus,
+				Armor = c.Armor,
+				Speed = c.Speed,
+				CurrentHp = c.CurrentHp,
+				MaxHp = c.MaxHp,
+				TempHp = c.TempHp,
+				Copper = c.Copper,
+				Silver = c.Silver,
+				Gold = c.Gold,
+				Platinum = c.Platinum,
+				Languages = c.Languages,
+				PersonalityTraits = c.PersonalityTraits,
+				Ideals = c.Ideals,
+				Bonds = c.Bonds,
+				Flaws = c.Flaws,
+				OtherTraits = c.OtherTraits
+            }).FirstOrDefaultAsync(c => c.CharacterId == CharacterId);
 
 			if (character == null) return NotFound("Character not found.");
 
-			character.InventoryItems = [.. character.InventoryItems.OrderBy(i => i.ItemName)];
-			character.Attacks = [.. character.Attacks.OrderBy(a => a.AttackName)];
+			//character.InventoryItems = [.. character.InventoryItems.OrderBy(i => i.ItemName)];
+			//character.Attacks = [.. character.Attacks.OrderBy(a => a.AttackName)];
 
 			return Ok(character);
 		}
 
 		[HttpGet]
 		[Route("/InventoryItem/Get/{CharacterID}")]
-		public async Task<IActionResult> GetInventoryItem([FromRoute] Guid CharacterID)
+		public async Task<IActionResult> GetInventoryItems([FromRoute] Guid CharacterID)
 		{
-			var inventoryItem = await dbContext.InventoryItems.Where(i => i.CharacterId == CharacterID).ToArrayAsync();
+			//var inventoryItem = await dbContext.InventoryItems.Where(i => i.CharacterId == CharacterID).ToArrayAsync();
 
-			//var inventoryItem = await dbContext.InventoryItems.Include(i => i.Character)
-			//	.FirstOrDefaultAsync(i => i.CharacterId == CharacterID);
+			var inventoryItem = await dbContext.InventoryItems.Select(i => new InventoryItemDto
+			{
+                ItemId = i.ItemId,
+                CharacterId = i.CharacterId,
+                ItemName = i.ItemName,
+                ItemDescription = i.ItemDescription
+            })
+			.Where(i => i.CharacterId == CharacterID)
+			.OrderBy(i => i.ItemName)
+			.ToArrayAsync();
 
 			if (inventoryItem == null) return NotFound();
 
@@ -76,7 +121,7 @@ namespace ImmerseDnD.Back.Controllers
 
 		[HttpGet]
 		[Route("/InventoryItem/GetAll")]
-		public async Task<IActionResult> GetInventoryItems()
+		public async Task<IActionResult> GetAllInventoryItems()
 		{
 			var inventoryItems = await dbContext.InventoryItems.ToArrayAsync();
 
@@ -87,9 +132,23 @@ namespace ImmerseDnD.Back.Controllers
 
 		[HttpGet]
 		[Route("/Attack/Get/{CharacterID}")]
-		public async Task<IActionResult> GetAttack([FromRoute] Guid CharacterID)
+		public async Task<IActionResult> GetAttacks([FromRoute] Guid CharacterID)
 		{
-			var attack = await dbContext.Attacks.Where(c => c.CharacterId == CharacterID).ToArrayAsync();
+			//var attack = await dbContext.Attacks.Where(c => c.CharacterId == CharacterID).ToArrayAsync();
+
+			var attack = await dbContext.Attacks.Select(a => new AttackDto
+			{
+                AttackId = a.AttackId,
+                CharacterId = a.CharacterId,
+                AttackName = a.AttackName,
+                AttackRange = a.AttackRange,
+                DiceNumber = a.DiceNumber,
+                DiceType = a.DiceType,
+                DamageType = a.DamageType
+            })
+			.Where(a => a.CharacterId == CharacterID)
+			.OrderBy(a => a.AttackName)
+			.ToArrayAsync();
 
 			if (attack == null) return NotFound();
 
@@ -98,7 +157,7 @@ namespace ImmerseDnD.Back.Controllers
 
 		[HttpGet]
 		[Route("/Attack/GetAll")]
-		public async Task<IActionResult> GetAttacks()
+		public async Task<IActionResult> GetAllAttacks()
 		{
 			var attacks = await dbContext.Attacks.ToArrayAsync();
 
@@ -111,9 +170,17 @@ namespace ImmerseDnD.Back.Controllers
 		[Route("/User/Get/{UserName}")]
 		public async Task<IActionResult> GetUser([FromRoute] string UserName)
 		{
-			var user = await dbContext.Users.Include(u => u.Characters).ThenInclude(c=>c.InventoryItems)
-				.Include(u => u.Characters).ThenInclude(c => c.Attacks)
-				.FirstOrDefaultAsync(u => u.UserName == UserName);
+			//var user = await dbContext.Users.Include(u => u.Characters).ThenInclude(c=>c.InventoryItems)
+			//	.Include(u => u.Characters).ThenInclude(c => c.Attacks)
+			//	.FirstOrDefaultAsync(u => u.UserName == UserName);
+
+			var user = await dbContext.Users.Select(u => new UserDto
+			{
+                UserId = u.UserId,
+                UserName = u.UserName,
+                UserEmail = u.UserEmail,
+                UserPassword = u.UserPassword
+            }).FirstOrDefaultAsync(u => u.UserName == UserName);
 
 			if (user == null) return NotFound();
 
@@ -125,7 +192,7 @@ namespace ImmerseDnD.Back.Controllers
 		#region PostRequests
 		[HttpPost]
 		[Route("/Character/Create/{UserID}")]
-		public async Task<IActionResult> CreateCharacter(/*CharacterDto characterDto*/[FromRoute] Guid UserID)
+		public async Task<IActionResult> CreateCharacter([FromRoute] Guid UserID)
 		{
 			var user = await dbContext.Users.FindAsync(UserID);
 			if (user == null) return NotFound("User not found.");

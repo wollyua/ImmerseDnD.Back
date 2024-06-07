@@ -36,6 +36,7 @@ public partial class Attack
 
 public class AttackDto
 {
+    public Guid AttackId { get; set; }
     public Guid CharacterId { get; set; }
     public string AttackName { get; set; } = null!;
     public short? AttackRange { get; set; }

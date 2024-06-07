@@ -121,7 +121,7 @@ public partial class Character
 
 public class CharacterDto
 {
-    public Guid UserId { get; set; }
+    public Guid CharacterId { get; set; }
     public string CharacterName { get; set; } = null!;
     public string CharacterRace { get; set; } = null!;
     public string CharacterClass { get; set; } = null!;
@@ -159,7 +159,7 @@ public class CharacterDto
 
 public class CharacterPreviewDto
 {
-    public Guid Id { get; set; }
+    public Guid CharacterId { get; set; }
     public Guid UserId { get; set; }
     public string CharacterName { get; set; } = null!;
     public string CharacterRace { get; set; } = null!;
